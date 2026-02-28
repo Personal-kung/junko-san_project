@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luxury Touch Massage</title>
+<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header id="hero">
+  <div class="hero">
+    <h1 id="siteName"></h1>
+    <p id="tagline"></p>
+    <button class="btn" onclick="scrollToServices()">View Services</button>
+  </div>
+</header>
+
+<section id="servicesSection">
+  <h2>Our Services</h2>
+  <div id="servicesContainer" class="services"></div>
+</section>
+
+<section id="bookingSection">
+  <h2>Book an Appointment</h2>
+  <div class="booking-container">
+    <form id="bookingForm">
+      <select id="bookingService" required></select>
+      <input type="text" id="customerName" placeholder="Full Name" required>
+      <input type="email" id="customerEmail" placeholder="Email Address" required>
+      <input type="tel" id="customerPhone" placeholder="Phone Number" required>
+      <input type="date" id="bookingDate" required>
+      <input type="time" id="bookingTime" required>
+      <textarea id="bookingNotes" placeholder="Special Requests"></textarea>
+      <button type="submit" class="btn">Confirm Booking</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <p id="contactPhone"></p>
+  <p id="contactEmail"></p>
+  <p id="contactAddress"></p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
