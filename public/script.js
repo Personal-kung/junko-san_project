@@ -34,11 +34,40 @@ function renderSite() {
       </div>`;
   });
 
+  // Populate booking service and duration options
   // Populate booking service options
-  const select = document.getElementById("bookingService");
-  select.innerHTML = "<option value=''>Select Service</option>";
-  siteData.services.forEach(s => {
-    select.innerHTML += `<option value="${s.title}">${s.title} - ${s.price}</option>`;
+  const serviceSelect = document.getElementById("bookingService");
+  const durationSelect = document.getElementById("bookingDuration");
+
+  // Default options
+  serviceSelect.innerHTML = "<option value=''>Select Service</option>";
+  durationSelect.innerHTML = "<option value=''>Select Duration</option>";
+
+  // Populate services
+  siteData.services.forEach((service, index) => {
+    serviceSelect.innerHTML += `
+    <option value="${index}">
+      ${service.title} - ${service.price}
+    </option>`;
+  });
+
+  // When service changes → update durations
+  serviceSelect.addEventListener("change", function () {
+    const selectedIndex = this.value;
+
+    // Reset duration dropdown
+    durationSelect.innerHTML = "<option value=''>Select Duration</option>";
+
+    if (selectedIndex !== "") {
+      const selectedService = siteData.services[selectedIndex];
+
+      selectedService.duration.forEach(duration => {
+        durationSelect.innerHTML += `
+        <option value="${duration}">
+          ${duration}
+        </option>`;
+      });
+    }
   });
 
   // Contact info
