@@ -38,7 +38,7 @@ function renderSite() {
   // Populate booking service options
   const serviceSelect = document.getElementById("bookingService");
   const durationSelect = document.getElementById("bookingDuration");
-  const addonsSelect = document.getElementById("bookingaddons");
+  const addonsSelect = document.getElementById("addons");
 
   // Default options
   serviceSelect.innerHTML = "<option value=''>Select Service</option>";
