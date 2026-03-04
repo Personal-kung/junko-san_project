@@ -38,10 +38,12 @@ function renderSite() {
   // Populate booking service options
   const serviceSelect = document.getElementById("bookingService");
   const durationSelect = document.getElementById("bookingDuration");
+  const addonsSelect = document.getElementById("bookingaddons");
 
   // Default options
   serviceSelect.innerHTML = "<option value=''>Select Service</option>";
   durationSelect.innerHTML = "<option value=''>Select Duration</option>";
+  addonsSelect.innerHTML = "<option value=''>Select Add ons</option>";
 
   // Populate services
   siteData.services.forEach((service, index) => {
@@ -57,14 +59,22 @@ function renderSite() {
 
     // Reset duration dropdown
     durationSelect.innerHTML = "<option value=''>Select Duration</option>";
+    addonsSelect.innerHTML = "<option value=''>Select Add ons</option>";
 
     if (selectedIndex !== "") {
       const selectedService = siteData.services[selectedIndex];
-
+      //duration
       selectedService.duration.forEach(duration => {
         durationSelect.innerHTML += `
         <option value="${duration}">
           ${duration}
+        </option>`;
+      });
+      //add ons
+      selectedService.addons.forEach((x,y) => {
+        addonsSelect.innerHTML += `
+        <option value="${x}">
+          ${x.name} - ${x.price} 
         </option>`;
       });
     }
