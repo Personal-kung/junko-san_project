@@ -1,25 +1,28 @@
-// Global variable to store site data
-let siteData = null;
+// Initialize Firestore through the global 'db' variable defined in index.html
+// No need to redeclare db if it's already in the <script> tag of index.html
 
-// Load JSON data
-async function loadSiteData() {
-  try {
-    const res = await fetch("data.json"); // static JSON file
-    siteData = await res.json();
-    renderSite();
-  } catch (err) {
-    console.error("Failed to load site data:", err);
-    alert("Could not load site data.");
-  }
+// 1. Load Data from Firebase instead of data.json
+function loadSiteData() {
+  // .onSnapshot creates a real-time connection
+  db.collection('site_content').doc('landing_page')
+    .onSnapshot((doc) => {
+      if (doc.exists) {
+        const siteData = doc.data();
+        renderSite(siteData);
+      } else {
+        console.error("No site data found in Firestore! Run migrate.js first.");
+      }
+    }, (err) => {
+      console.error("Firebase listen failed:", err);
+    });
 }
 
-// Render the website content
-function renderSite() {
+// 2. Render the website content (Modified to accept data from Firestore)
+function renderSite(siteData) {
   // Hero section
   document.getElementById("siteName").textContent = siteData.site.name;
   document.getElementById("tagline").textContent = siteData.site.tagline;
-  document.getElementById("hero").style.backgroundImage =
-    `url(${siteData.site.heroImage})`;
+  document.getElementById("hero").style.backgroundImage = `url(${siteData.site.heroImage})`;
 
   // Services section
   const container = document.getElementById("servicesContainer");
@@ -34,8 +37,7 @@ function renderSite() {
       </div>`;
   });
 
-  // Populate booking service and duration options
-  // Populate booking service options
+  // Populate booking selectors
   const serviceSelect = document.getElementById("bookingService");
   const durationSelect = document.getElementById("bookingDuration");
   const addonsSelect = document.getElementById("addons");
@@ -53,32 +55,29 @@ function renderSite() {
     </option>`;
   });
 
-  // When service changes → update durations
-  serviceSelect.addEventListener("change", function () {
+  // Event listener for dynamic dropdowns (Duration/Addons)
+  // We use a named function or check to prevent multiple listeners if re-rendered
+  serviceSelect.onchange = function () {
     const selectedIndex = this.value;
 
-    // Reset duration dropdown
     durationSelect.innerHTML = "<option value=''>Select Duration</option>";
     addonsSelect.innerHTML = "<option value=''>Select Add ons</option>";
 
     if (selectedIndex !== "") {
       const selectedService = siteData.services[selectedIndex];
-      //duration
+      
       selectedService.duration.forEach(duration => {
-        durationSelect.innerHTML += `
-        <option value="${duration}">
-          ${duration}
-        </option>`;
+        durationSelect.innerHTML += `<option value="${duration}">${duration}</option>`;
       });
-      //add ons
-      selectedService.addons.forEach((x,y) => {
+
+      selectedService.addons.forEach(addon => {
         addonsSelect.innerHTML += `
-        <option value="${x}">
-          ${x.name} - ${x.price} 
+        <option value="${addon.name}">
+          ${addon.name} - ${addon.price} 
         </option>`;
       });
     }
-  });
+  };
 
   // Contact info
   document.getElementById("contactPhone").textContent = siteData.contact.phone;
@@ -86,34 +85,41 @@ function renderSite() {
   document.getElementById("contactAddress").textContent = siteData.contact.address;
 }
 
-// Scroll to services
+// 3. Scroll function remains the same
 function scrollToServices() {
   document.getElementById("servicesSection").scrollIntoView({ behavior: "smooth" });
 }
 
-// Booking form
-document.getElementById("bookingForm").addEventListener("submit", function (e) {
+// 4. Updated Booking form to save to FIREBASE
+document.getElementById("bookingForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  // Since it's static, we cannot save bookings on server
+  // Create the booking object
   const booking = {
-    service: document.getElementById("bookingService").value,
-    name: document.getElementById("customerName").value,
-    email: document.getElementById("customerEmail").value,
-    phone: document.getElementById("customerPhone").value,
+    serviceIndex: document.getElementById("bookingService").value,
+    duration: document.getElementById("bookingDuration").value,
+    addon: document.getElementById("addons").value,
+    customerName: document.getElementById("customerName").value,
+    customerEmail: document.getElementById("customerEmail").value,
+    customerPhone: document.getElementById("customerPhone").value,
     date: document.getElementById("bookingDate").value,
     time: document.getElementById("bookingTime").value,
-    notes: document.getElementById("bookingNotes").value
+    notes: document.getElementById("bookingNotes").value,
+    status: "new", // This allows your Flutter app to filter "New" bookings
+    timestamp: firebase.firestore.FieldValue.serverTimestamp() // Cloud time
   };
 
-  // Save in localStorage (temporary, per user)
-  let bookings = JSON.parse(localStorage.getItem("bookings") || "[]");
-  bookings.push(booking);
-  localStorage.setItem("bookings", JSON.stringify(bookings));
-
-  alert("Booking saved locally! For real booking, integrate an email or backend service.");
-  this.reset();
+  try {
+    // Save to the 'bookings' collection in Firestore
+    await db.collection("bookings").add(booking);
+    
+    alert("Booking sent successfully! You will receive a confirmation soon.");
+    this.reset();
+  } catch (error) {
+    console.error("Error saving booking:", error);
+    alert("Failed to send booking. Please try again.");
+  }
 });
 
-// Initialize
+// Initialize the app
 loadSiteData();
