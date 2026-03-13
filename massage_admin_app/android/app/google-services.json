@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "618095960112",
+    "project_id": "junko-san-05zvr7",
+    "storage_bucket": "junko-san-05zvr7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618095960112:android:448fbcb49c68a26fab4df5",
+        "android_client_info": {
+          "package_name": "com.luxurytouch.massage_admin_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3QlqdGXNrEY7FVK05o56-BLX3GV8UCpE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618095960112:android:6a1b1efeab9c1dfdab4df5",
+        "android_client_info": {
+          "package_name": "com.mycompany.junkosan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3QlqdGXNrEY7FVK05o56-BLX3GV8UCpE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
