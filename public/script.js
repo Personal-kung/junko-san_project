@@ -65,7 +65,7 @@ function renderSite(siteData) {
 
     if (selectedIndex !== "") {
       const selectedService = siteData.services[selectedIndex];
-      
+
       selectedService.duration.forEach(duration => {
         durationSelect.innerHTML += `<option value="${duration}">${duration}</option>`;
       });
@@ -94,25 +94,34 @@ function scrollToServices() {
 document.getElementById("bookingForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  // Create the booking object
+  // 1. Get the select element
+  const serviceSelect = document.getElementById("bookingService");
+  const dateInput = document.getElementById("bookingDate").value;
+  const timeInput = document.getElementById("bookingTime").value;
+
+  // 2. Capture the Text (e.g., "Deep Tissue") instead of Value (e.g., "0")
+  const serviceName = serviceSelect.options[serviceSelect.selectedIndex].text;
+  const combinedDateTime = new Date(`${dateInput}T${timeInput}`);
+
   const booking = {
-    serviceIndex: document.getElementById("bookingService").value,
+    service: serviceName, // Now saves the actual name (e.g., "Swedish Massage")
     duration: document.getElementById("bookingDuration").value,
     addon: document.getElementById("addons").value,
     customerName: document.getElementById("customerName").value,
     customerEmail: document.getElementById("customerEmail").value,
-    customerPhone: document.getElementById("customerPhone").value,
-    date: document.getElementById("bookingDate").value,
-    time: document.getElementById("bookingTime").value,
+    customerPhone: document.getElementById("customerPhone").value,    
+    scheduledDateTime: combinedDateTime,    
+    date: dateInput,
+    time: timeInput,
     notes: document.getElementById("bookingNotes").value,
-    status: "new", // This allows your Flutter app to filter "New" bookings
-    timestamp: firebase.firestore.FieldValue.serverTimestamp() // Cloud time
+    status: "new",
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
   };
 
   try {
     // Save to the 'bookings' collection in Firestore
     await db.collection("bookings").add(booking);
-    
+
     alert("Booking sent successfully! You will receive a confirmation soon.");
     this.reset();
   } catch (error) {
