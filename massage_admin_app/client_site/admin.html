@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f8f8f8;
+            border-radius: 12px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .service-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .service-item input {
+            padding: 5px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .service-item button {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #addServiceBtn {
+            margin-top: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #addServiceBtn:hover,
+        .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="admin-container" id="loginSection">
+        <h2>Admin Login</h2>
+        <input type="text" id="adminUser" placeholder="Username"><br><br>
+        <input type="password" id="adminPass" placeholder="Password"><br><br>
+        <button class="btn" onclick="adminLogin()">Login</button>
+    </section>
+
+    <section class="admin-container hidden" id="dashboardSection">
+        <h2>Dashboard</h2>
+
+        <h3>Manage Services</h3>
+        <div id="servicesList"></div>
+        <button id="addServiceBtn">+ Add Service</button>
+        <br><br>
+        <button class="btn" onclick="saveChanges()">Save All Changes</button>
+    </section>
+
+    <script src="admin.js"></script>
+</body>
+
+</html>
