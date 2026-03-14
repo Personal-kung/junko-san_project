@@ -628,8 +628,15 @@ class SettingsTab extends StatelessWidget {
           ? (serviceData['duration'] as List).join(", ")
           : "60 min, 90 min",
     );
+
+    // Ensure our local list has the new fields initialized
     List tempAddons = serviceData['addons'] != null
-        ? List.from(serviceData['addons'])
+        ? List.from(serviceData['addons'].map((a) => {
+              "name": a['name'] ?? "",
+              "price": a['price'] ?? "",
+              "description": a['description'] ?? "",
+              "time": a['time'] ?? "0", // Default to 0 extra minutes
+            }))
         : [];
 
     showDialog(
@@ -643,91 +650,104 @@ class SettingsTab extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  TextField(controller: titleC, decoration: const InputDecoration(labelText: "Service Title")),
+                  TextField(controller: priceC, decoration: const InputDecoration(labelText: "Base Price")),
+                  TextField(controller: descC, decoration: const InputDecoration(labelText: "Service Description")),
+                  TextField(controller: imageC, decoration: const InputDecoration(labelText: "Image URL")),
                   TextField(
-                    controller: titleC,
-                    decoration: const InputDecoration(labelText: "Title"),
+                    controller: durC, 
+                    decoration: const InputDecoration(labelText: "Durations (e.g. 60 min, 90 min)"),
                   ),
-                  TextField(
-                    controller: priceC,
-                    decoration: const InputDecoration(labelText: "Price"),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 20, bottom: 10),
+                    child: Divider(),
                   ),
-                  TextField(
-                    controller: descC,
-                    decoration: const InputDecoration(labelText: "Description"),
-                  ),
-                  TextField(
-                    controller: imageC,
-                    decoration: const InputDecoration(labelText: "Image URL"),
-                  ),
-                  TextField(
-                    controller: durC,
-                    decoration: const InputDecoration(
-                      labelText: "Durations (comma separated)",
-                    ),
-                  ),
-                  const Divider(),
-                  const Text(
-                    "Add-ons",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("Add-ons", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      TextButton.icon(
+                        onPressed: () => setS(() => tempAddons.add({"name": "", "price": "", "description": "", "time": "0"})),
+                        icon: const Icon(Icons.add_circle_outline),
+                        label: const Text("Add New"),
+                      ),
+                    ],
                   ),
                   ...tempAddons.asMap().entries.map(
-                    (e) => Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            decoration: const InputDecoration(hintText: "Name"),
-                            onChanged: (v) => e.value['name'] = v,
-                            controller: TextEditingController(
-                              text: e.value['name'],
-                            ),
+                    (e) {
+                      int idx = e.key;
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: TextField(
+                                      decoration: const InputDecoration(labelText: "Add-on Name"),
+                                      onChanged: (v) => tempAddons[idx]['name'] = v,
+                                      controller: TextEditingController.fromValue(TextEditingValue(text: tempAddons[idx]['name'], selection: TextSelection.collapsed(offset: tempAddons[idx]['name'].length))),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: TextField(
+                                      decoration: const InputDecoration(labelText: "Price"),
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (v) => tempAddons[idx]['price'] = v,
+                                      controller: TextEditingController.fromValue(TextEditingValue(text: tempAddons[idx]['price'], selection: TextSelection.collapsed(offset: tempAddons[idx]['price'].length))),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete_outline, color: Colors.red),
+                                    onPressed: () => setS(() => tempAddons.removeAt(idx)),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: TextField(
+                                      decoration: const InputDecoration(labelText: "Add-on Description"),
+                                      onChanged: (v) => tempAddons[idx]['description'] = v,
+                                      controller: TextEditingController.fromValue(TextEditingValue(text: tempAddons[idx]['description'], selection: TextSelection.collapsed(offset: tempAddons[idx]['description'].length))),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: TextField(
+                                      decoration: const InputDecoration(labelText: "+ Time (min)"),
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (v) => tempAddons[idx]['time'] = v,
+                                      controller: TextEditingController.fromValue(TextEditingValue(text: tempAddons[idx]['time'], selection: TextSelection.collapsed(offset: tempAddons[idx]['time'].length))),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: TextField(
-                            decoration: const InputDecoration(
-                              hintText: "Price",
-                            ),
-                            onChanged: (v) => e.value['price'] = v,
-                            controller: TextEditingController(
-                              text: e.value['price'],
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () =>
-                              setS(() => tempAddons.removeAt(e.key)),
-                        ),
-                      ],
-                    ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () =>
-                        setS(() => tempAddons.add({"name": "", "price": ""})),
-                    icon: const Icon(Icons.add),
-                    label: const Text("Add Add-on"),
+                      );
+                    },
                   ),
                 ],
               ),
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text("Cancel"),
-            ),
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
             ElevatedButton(
-              onPressed: () async {
+              onPressed: () {
                 final newService = {
                   "title": titleC.text,
                   "price": priceC.text,
                   "description": descC.text,
                   "image": imageC.text,
-                  "duration": durC.text
-                      .split(',')
-                      .map((e) => e.trim())
-                      .toList(),
+                  "duration": durC.text.split(',').map((e) => e.trim()).toList(),
                   "addons": tempAddons,
                 };
 
@@ -738,20 +758,17 @@ class SettingsTab extends StatelessWidget {
                   updatedList.add(newService);
                 }
 
-                // 1. NON-BLOCKING UPDATE
                 _updateField("services", updatedList);
-
-                // 2. INSTANT UI FEEDBACK
                 Navigator.pop(ctx);
               },
-              child: const Text("Save"),
+              child: const Text("Save Service"),
             ),
           ],
         ),
       ),
     );
   }
-
+  
   void _confirmDelete(BuildContext context, List services, int index) {
     showDialog(
       context: context,
