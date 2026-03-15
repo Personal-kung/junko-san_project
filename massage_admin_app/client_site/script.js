@@ -26,7 +26,9 @@ function renderSite(siteData) {
 
   // Services section
   const container = document.getElementById("servicesContainer");
+  const container1 = document.getElementById("addonsContainer");
   container.innerHTML = "";
+  container1.innerHTML = "";
   siteData.services.forEach(service => {
     container.innerHTML += `
       <div class="card">
@@ -35,6 +37,16 @@ function renderSite(siteData) {
         <p>${service.description}</p>
         <strong>${service.price}</strong>
       </div>`;
+    for (const addon of service.addons) {
+      if (addon.description !== undefined) {
+        container1.innerHTML += `
+          <div class="card">
+            <h3>${addon.name}</h3>
+            <p>${addon.description}</p>
+            <strong>${addon.price}</strong>
+          </div>`;
+      }
+    }
   });
 
   // Populate booking selectors
@@ -109,8 +121,8 @@ document.getElementById("bookingForm").addEventListener("submit", async function
     addon: document.getElementById("addons").value,
     customerName: document.getElementById("customerName").value,
     customerEmail: document.getElementById("customerEmail").value,
-    customerPhone: document.getElementById("customerPhone").value,    
-    scheduledDateTime: combinedDateTime,    
+    customerPhone: document.getElementById("customerPhone").value,
+    scheduledDateTime: combinedDateTime,
     date: dateInput,
     time: timeInput,
     notes: document.getElementById("bookingNotes").value,
