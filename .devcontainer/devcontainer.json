@@ -1,0 +1,33 @@
+{
+    "name": "Customer Service System Development",
+
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+
+    "features": {
+        "ghcr.io/devcontainers/features/go:1": {
+            "version": "1.24"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "20"
+        },
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "golang.go",
+                "bradlc.vscode-tailwindcss",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode"
+            ]
+        }
+    },
+
+    "forwardPorts": [
+        8080,
+        5173
+    ],
+
+    "postCreateCommand": "go version && node -v && npm -v"
+}
