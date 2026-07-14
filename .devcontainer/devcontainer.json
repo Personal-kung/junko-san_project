@@ -7,10 +7,9 @@
         "ghcr.io/devcontainers/features/go:1": {
             "version": "1.24"
         },
-        "ghcr.io/devcontainers/features/node:1": {
+        "ghcr.io/devcontainers/features/node:2.1.0": {
             "version": "20"
-        },
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+        }
     },
 
     "customizations": {
