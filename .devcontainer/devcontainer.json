@@ -1,5 +1,5 @@
 {
-    "name": "Customer Service System Development",
+    "name": "Business Reservation Platform",
 
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
 
@@ -16,10 +16,18 @@
         "vscode": {
             "extensions": [
                 "golang.go",
-                "bradlc.vscode-tailwindcss",
                 "dbaeumer.vscode-eslint",
-                "esbenp.prettier-vscode"
+                "esbenp.prettier-vscode",
+                "ms-vscode.vscode-typescript-next",
+                "eamodio.gitlens"
             ]
+        },
+        "settings": {
+            "editor.formatOnSave": true,
+            "editor.codeActionsOnSave": {
+                "source.fixAll.eslint": "explicit"
+            },
+            "go.useLanguageServer": true
         }
     },
 
@@ -28,5 +36,5 @@
         5173
     ],
 
-    "postCreateCommand": "go version && node -v && npm -v"
+    "postCreateCommand": "bash .devcontainer/postCreate.sh"
 }

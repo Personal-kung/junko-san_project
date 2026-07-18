@@ -1,1 +1,29 @@
-serviceAccountKey.json
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go
+bin/
+coverage.out
+
+# Database
+*.db
+*.db-journal
+
+# Environment
+.env
+
+# Node
+node_modules/
+dist/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
