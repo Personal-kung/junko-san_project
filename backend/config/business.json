@@ -1,0 +1,19 @@
+{
+    "name": "Junko Beauty Salon",
+    "tagline": "Beauty made simple.",
+    "description": "Welcome to our beauty salon. Reserve your appointment online in minutes.",
+
+    "phone": "",
+    "email": "",
+    "address": "",
+
+    "instagram": "",
+    "facebook": "",
+    "website": "",
+
+    "logo": "/assets/logo.png",
+    "hero_image": "/assets/hero.jpg",
+
+    "primary_color": "#D88CB3",
+    "secondary_color": "#FFFFFF"
+}

@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/Personal-kung/junko-san_project/api"
+	"github.com/Personal-kung/junko-san_project/database"
 )
 
 func statusHandler(w http.ResponseWriter, r *http.Request) {
-	enableCors(w, r)
 
 	if r.Method == http.MethodOptions {
 		return
@@ -22,23 +24,38 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func withCors(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set(
+			"Access-Control-Allow-Origin",
+			"*",
+		)
+		w.Header().Set(
+			"Access-Control-Allow-Methods",
+			"GET, POST, PATCH, PUT, DELETE, OPTIONS",
+		)
+		w.Header().Set(
+			"Access-Control-Allow-Headers",
+			"Content-Type, Authorization",
+		)
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		handler(w, r)
+	}
+}
+
 func main() {
 
-	http.HandleFunc("/api/status", statusHandler)
+	database.Connect()
+
+	http.HandleFunc("/api/status", withCors(statusHandler))
+	http.HandleFunc("/api/services", withCors(api.ServicesHandler))
+	http.HandleFunc("/api/reservations", withCors(api.ReservationHandler))
+	http.HandleFunc("/api/business", withCors(api.BusinessHandler))
 
 	log.Println("Server running on :8080")
 
-	// http.ListenAndServe(":8080", nil)
 	log.Fatal(http.ListenAndServe(":8080", nil))
-}
-
-func enableCors(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "https://supreme-pancake-777gvj5rvv9hrxvw-5173.app.github.dev")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusNoContent)
-		return
-	}
 }
